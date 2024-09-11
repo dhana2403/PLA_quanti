@@ -6,7 +6,7 @@ img <- readImage(image_path)
 
 red_channel <- channel(img, "red")
 
-threshold <- 0.5  # Adjust this threshold if needed based on your image
+threshold <- 0.5  
 binary_img <- red_channel > threshold
 
 display(binary_img, title = "Binary Image (Red Channel)")
