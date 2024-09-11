@@ -1,31 +1,33 @@
-
 library(EBImage)
 
-image_path <- "./image/duolink.jpg"
-img <- readImage(image_path)
+path <- "./image/duolink.jpg"
 
-red_channel <- channel(img, "red")
+duo <- readImage(path)
+
+red_channel <- channel(duo, "red")
 
 threshold <- 0.5  
+
 binary_img <- red_channel > threshold
 
 display(binary_img, title = "Binary Image (Red Channel)")
 
-
 binary_img <- dilate(binary_img, makeBrush(3, shape = "disc"))
+
 binary_img <- erode(binary_img, makeBrush(3, shape = "disc"))
 
 labels <- bwlabel(binary_img)
 
 regions <- computeFeatures.shape(labels)
 
-print("Region properties:")
 print(regions)
 
 num_signals <- max(labels, na.rm = TRUE)
+
 print(paste("Number of PLA signals detected:", num_signals))
 
 color_labels <- colorLabels(labels)
-display(color_labels, title = "Labeled Image (Red Channel PLA Signals)")
 
-display(red_channel, title = "Red Channel Image")
+display(color_labels, title = "Red Channel PLA Signals")
+
+display(red_channel, title = "Red Channel")
