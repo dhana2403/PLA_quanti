@@ -6,7 +6,7 @@ duo <- readImage(path)
 
 red_channel <- channel(duo, "red")
 
-threshold <- 0.5  
+threshold <- 0.5  # Adjust threshold as per your need
 
 binary_img <- red_channel > threshold
 
