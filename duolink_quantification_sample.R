@@ -1,33 +1,39 @@
 library(EBImage)
+library(imager)
 
-path <- "./image/duolink.jpg"
+image_path <- "./data/image/raw/sample.jpg" #Specify the path to your image
 
-duo <- readImage(path)
+img <- readImage(image_path)
 
-red_channel <- channel(duo, "red")
+red_channel <- img[,,1]
 
-threshold <- 0.5  # Adjust threshold as per your need
+threshold_value <- 0.6  # Adjust this based on the intensity in the red channel
 
-binary_img <- red_channel > threshold
+binary_img <- red_channel > threshold_value  
 
-display(binary_img, title = "Binary Image (Red Channel)")
+# Convert to cimg format for dilating using imager
+binary_img_cimg <- as.cimg(as.numeric(binary_img), dim = c(dim(binary_img), 1))
 
-binary_img <- dilate(binary_img, makeBrush(3, shape = "disc"))
+# Perform dilation using imager
+binary_img_dilated <- imager::dilate_square(binary_img_cimg, size = 3)  
 
-binary_img <- erode(binary_img, makeBrush(3, shape = "disc"))
+#Convert back to binary Image object for further EBImage processing
+binary_img_dilated <- Image(matrix(binary_img_dilated, nrow = dim(binary_img)[1], ncol = dim(binary_img)[2]))  # Reformat to 2D
 
-labels <- bwlabel(binary_img)
+# Label PLA signals
+labels <- bwlabel(binary_img_dilated)
 
+#Compute features of the detected regions (e.g., area, perimeter)
 regions <- computeFeatures.shape(labels)
-
 print(regions)
 
+#Count the number of PLA signals
 num_signals <- max(labels, na.rm = TRUE)
+print(paste("Number of PLA signals detected:", num_signals)) 
 
-print(paste("Number of PLA signals detected:", num_signals))
-
+#Create result directory and save the images
+output_dir <- "./data/image/results/"
+dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)  
+writeImage(binary_img_dilated, file.path(output_dir, "binary_image_dilated.png"))
 color_labels <- colorLabels(labels)
-
-display(color_labels, title = "Red Channel PLA Signals")
-
-display(red_channel, title = "Red Channel")
+writeImage(color_labels, file.path(output_dir, "color_labels.png"))
