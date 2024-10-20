@@ -1,8 +1,7 @@
 library(EBImage)
 library(imager)
 
-image_path <- "./data/image/raw/sample.jpg" #Specify the path to your image
-
+image_path <- "./data/image/raw/sample.jpg"
 img <- readImage(image_path)
 
 red_channel <- img[,,1]
@@ -29,11 +28,9 @@ print(regions)
 
 #Count the number of PLA signals
 num_signals <- max(labels, na.rm = TRUE)
-print(paste("Number of PLA signals detected:", num_signals)) 
+print(paste("Number of PLA signals detected:", num_signals))
 
 #Create result directory and save the images
 output_dir <- "./data/image/results/"
 dir.create(output_dir, recursive = TRUE, showWarnings = FALSE)  
-writeImage(binary_img_dilated, file.path(output_dir, "binary_image_dilated.png"))
-color_labels <- colorLabels(labels)
-writeImage(color_labels, file.path(output_dir, "color_labels.png"))
+writeImage(binary_img, file.path(output_dir, "binary_img.png"))
