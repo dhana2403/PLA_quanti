@@ -1,7 +1,7 @@
 library(EBImage)
 library(imager)
 
-image_path <- "./data/image/raw/sample.jpg"
+image_path <- "./data/image/raw/sample.jpg" #provide the path to your image
 img <- readImage(image_path)
 
 red_channel <- img[,,1]
